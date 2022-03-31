@@ -1,3 +1,6 @@
+version 14.2
+set more off
+
 *Définition du répertoire de travail
 cd "C:\Users\Boria\OneDrive - Food and Agriculture Organization\FAO 2020\DL\WORKDIR"
 use DL02, clear
@@ -53,21 +56,13 @@ fracreg logit y V026	V020	V025	V206	V216	V027	V022	V021	V006	///
 	V017	V211	V031	V023	V013	V028	V135	V204	V016	///
 	V100	V101	V136	V106	V142	i.V319rr
 
-*Données complètes pour analyses ultérieures
-import excel "C:\Users\USER\OneDrive - Food and Agriculture Organization\FAO 2020\DL\WORKDIR\DMP.xlsx", sheet("Sheet1") firstrow clear
-save dmp, replace
+*Données complètes pour analyses ultérieures Avec le DMP
+use dmp, clear
 merge 1:1 V002 using DL03, nogen
 merge 1:1 V002 using DL01
 save DL04, replace
 
-/*
-*Effet marginaux et estimation des probabilités empiriques
-margins, at( V100=(-50(-10)-80)) /*Baisse de la production de Mil*/
-margins, at( V106=(-50(-10)-80)) /*Baisse de la production d'Arachide*/
-margins V319rr, at( V100=(-50(-10)-80) V101=(-40(-10)-70)) /*Effets combinés par pays Mil et Arachide*/
-*/
-
-*Avec le DMP
+*Avec le DMP (excel)
 import excel "C:\Users\Boria\OneDrive - Food and Agriculture Organization\FAO 2020\DL\WORKDIR\BaseConsolidee.xlsx", sheet("Sheet1") firstrow clear
 drop V319r V319rr
 encode V319, gen(V319r)
@@ -80,29 +75,19 @@ replace V319r = 5 in 174
 *Analyse de régression (Minimal)#1: DMP
 fracreg logit y V026	V136	V020	V025	V206	V216	V027	V022	///
 	V021	V031	V100	V101	V106	V142	V146 i.V319r DMP
-*Analyse de régression (Minimal)#2: DMPC
+*Analyse de régression (Minimal)#2: DMPC (%)
 fracreg logit y V026	V136	V020	V025	V206	V216	V027	V022	///
 	V021	V031	V100	V101	V106	V142	V146 i.V319r DMPC
 
-*Analyse de régression (Final)#2: DMPC
+*Analyse de régression (Final)#2: DMPC (%)
 fracreg logit y V026	V020	V025	V206	V216	V027	V022	V021	///
 	V006	V017	V211	V031	V023	V013	V028	V135	V204	V016	///
 	V100	V101	V136	V106	V142	V146 i.V319r DMPC
 
-*Analyse de régression (Final)#1: DMP
+*Analyse de régression (Final)#1: DMP : modèle retenue dans la note de synthèse
 asdoc fracreg logit y V026	V020	V025	V206	V216	V027	V022	V021	V006	///
 	V017	V211	V031	V023	V013	V028	V135	V204	V016	///
 	V100	V101	V136	V106	V142	V146 i.V319r DMP, label
-
-/*Données complètes pour analyses ultérieures
-save DL05, replace
-	**Ajout Cameroun et Nigeria
-	import excel "C:\Users\USER\OneDrive - Food and Agriculture Organization\FAO 2020\DL\WORKDIR\cameroon_nigeria_matrix.xlsx", sheet("Sheet1") firstrow clear
-	rename DMPA DMP
-	gen y=V318/V003
-	save DL05a, replace
-	append using DL05
-save DL06, replace*/
 
 *Effet marginaux et estimation des probabilités empiriques R1
 margins if V319r==1,  at(V100=-25 V101=-25 V106=-70 DMP=-2.37) saving(R1BF, replace) /*R1:BF*/

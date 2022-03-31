@@ -1,3 +1,6 @@
+version 14.2
+set more off
+
 *Définition du répertoire de travail
 cd "C:\Users\Boria\OneDrive - Food and Agriculture Organization\FAO 2020\DL\WORKDIR"
 use DL01, clear

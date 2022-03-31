@@ -1,3 +1,6 @@
+version 14.2
+set more off
+
 *Définition du répertoire de travail
 cd "C:\Users\Boria\OneDrive - Food and Agriculture Organization\FAO 2020\DL\WORKDIR"
 
@@ -395,3 +398,5 @@ lab var V316 Phase4
 lab var V317 Phase5
 lab var V318 Phase35
 lab var V319 Pays
+
+save , replace
